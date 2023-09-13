@@ -1,0 +1,11 @@
+---
+# ansible-playbook -i hosts.yml site.yml
+- name: Install kanboard
+  hosts: hosts
+  user: root
+  vars:
+    - version: "1.2.7"
+  roles:
+  - common
+  # - kanboard
+

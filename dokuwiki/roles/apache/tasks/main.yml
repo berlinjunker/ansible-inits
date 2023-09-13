@@ -1,0 +1,28 @@
+- name: install apache2
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - libapache2-mod-php
+    - php-xml
+
+- name: copy config to sites-available
+  copy:
+    src: ../config/wiki.example.com.conf
+    dest: /etc/apache2/sites-available/wiki.example.com.conf
+
+- name: enable rewrite module
+  apache2_module:
+    state: present
+    name: rewrite
+- name: enable userdir module
+  apache2_module:
+    state: present
+    name: userdir
+
+- name: dissable default site config
+  command: a2dissite 000-default.conf
+
+- name: enable wiki site config
+  command: a2ensite wiki.example.com.conf

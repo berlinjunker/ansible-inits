@@ -1,0 +1,39 @@
+- name: install php and necessary packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+      - apache2
+      - libapache2-mod-php7.0
+      - php7.0
+      - php7.0-cli
+      - php7.0-mbstring
+      - php7.0-sqlite3
+      - php7.0-opcache
+      - php7.0-json
+      - php7.0-mysql
+      - php7.0-pgsql
+      - php7.0-ldap
+      - php7.0-gd
+      - php7.0-xml
+
+- name: enable services 
+  systemd:
+    name: apache2
+    enabled: yes
+
+- name: copy apache config to sites-available
+  copy:
+    src: "../config/kanboard.conf"
+    dest: "/etc/apache2/sites-available/"
+
+- name: disable all sites
+  command: "a2dissite *"
+- name: enable kanboard config
+  command: "a2ensite kanboard"
+
+- name: reload service apache
+  systemd:
+    name: apache2
+    state: restart

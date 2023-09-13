@@ -1,0 +1,18 @@
+---
+# ansible-playbook -i hosts.yml site.yml
+- name: Install dokuwiki
+  hosts: hosts
+  user: root
+  handlers:
+    - apache
+  roles:
+  # - apache
+  # - common
+  - dokuwiki/install
+
+
+- name: After-Install Cleanup
+  hosts: hosts
+  user: root
+  roles:
+    - dokuwiki-cleanup

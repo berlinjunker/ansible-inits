@@ -1,0 +1,20 @@
+# - name: Download latest kanboard version
+#   get_url:
+#     url: "https://github.com/kanboard/kanboard/archive/v{{ version }}.tar.gz"
+#     dest: /root
+
+# - name: extract kanboard file
+#   unarchive:
+#     src: /root/kanboard-{{ version }}.tar.gz
+#     dest: /var/www/
+#     remote_src: yes
+
+- name: rename kanboard folder
+  command: "mv /var/www/kanboard-{{ version }} /var/www/kanboard"
+
+- name: set correct permissions
+  file:
+    path: "/var/www/kanboard/data"
+    owner: www-data
+    group: www-data
+    recurse: yes

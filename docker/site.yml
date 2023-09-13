@@ -1,0 +1,9 @@
+---
+# ansible-playbook -i hosts.yml site.yml
+- name: Install docker
+  hosts: hosts
+  user: root
+  vars:
+    version: 1.23.1
+  roles:
+  - docker

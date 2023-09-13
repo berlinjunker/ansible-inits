@@ -1,0 +1,44 @@
+# Dependencies
+- name: Install common packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - apt-transport-https
+    - curl
+
+# Docker
+- name: Add Docker gpg key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+- name: add docker repo
+  become: true
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable'
+    update_cache: yes
+- name: Install docker-ce
+  become: true
+  apt:
+    update_cache: yes
+    name: docker-ce
+    state: present
+- name: Install docker-compose
+  become: true
+  shell: 'curl -L "https://github.com/docker/compose/releases/download/{{ version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}" -o /usr/local/bin/docker-compose'
+- name: Check if docker-compose exists
+  stat:
+    path: /usr/local/bin/docker-compose
+  register: stat_result
+- name: Install docker-compose
+  become: true
+  uri:
+    url: 'https://github.com/docker/compose/releases/download/{{ version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}'
+    dest: /usr/local/bin/docker-compose
+  when: stat_result.stat.exists == False
+- name: make docker-compose executable
+  become: true
+  file:
+    path: /usr/local/bin/docker-compose
+    mode: '+x'
